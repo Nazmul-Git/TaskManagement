@@ -29,7 +29,7 @@ export default function TaskForm({ defaultValues, isEditing }: TaskFormProps) {
         await createTask(data);
       }
       router.push('/');
-      router.refresh(); 
+      router.refresh();
     } catch (error) {
       console.error('Error submitting form:', error);
       setError('Failed to save task. Please try again.');
@@ -53,7 +53,7 @@ export default function TaskForm({ defaultValues, isEditing }: TaskFormProps) {
         <input
           id="title"
           {...register('title', { required: 'Title is required' })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+          className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
         />
         {errors.title && (
           <p className="mt-2 text-sm text-red-600">{errors.title.message}</p>
@@ -68,7 +68,7 @@ export default function TaskForm({ defaultValues, isEditing }: TaskFormProps) {
           id="description"
           rows={4}
           {...register('description')}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+          className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
         />
       </div>
 
@@ -79,7 +79,7 @@ export default function TaskForm({ defaultValues, isEditing }: TaskFormProps) {
         <select
           id="status"
           {...register('status', { required: 'Status is required' })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
+          className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
         >
           <option value="pending">Pending</option>
           <option value="completed">Completed</option>
@@ -93,12 +93,14 @@ export default function TaskForm({ defaultValues, isEditing }: TaskFormProps) {
         <label htmlFor="due_date" className="block text-sm font-medium text-gray-700">
           Due Date
         </label>
-        <input
-          type="date"
-          id="due_date"
-          {...register('due_date', { required: 'Due date is required' })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
-        />
+        <div className="relative">
+          <input
+            type="date"
+            id="due_date"
+            {...register('due_date', { required: 'Due date is required' })}
+            className="text-black mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border appearance-none [&::-webkit-calendar-picker-indicator]:invert-[50%] [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+          />
+        </div>
         {errors.due_date && (
           <p className="mt-2 text-sm text-red-600">{errors.due_date.message}</p>
         )}
