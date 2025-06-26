@@ -6,7 +6,6 @@ interface TaskCardListProps {
   tasks: Task[];
   onDeleteTask: (taskId: string) => void;
   deletingId: string | null;
-  due_date: string;
 }
 
 export default function TaskCardList({ tasks, onDeleteTask, deletingId }: TaskCardListProps) {
@@ -37,7 +36,7 @@ export default function TaskCardList({ tasks, onDeleteTask, deletingId }: TaskCa
             )}
 
             <div className="mt-3 text-sm text-gray-500">
-              {task.dueDate && (
+              {task.due_date && (
                 <p>Due: {new Date(task.due_date).toLocaleDateString()}</p>
               )}
             </div>
