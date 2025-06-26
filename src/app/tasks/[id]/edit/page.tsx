@@ -1,9 +1,9 @@
 
-import TaskForm from '@/app/Components/TaskForm';
-import { Loading } from '@/app/Components/UI/Loading';
-import { fetchTask } from '@/app/lib/api';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import { fetchTask } from '../../../lib/api';
+import { Loading } from '../../../Components/UI/Loading';
+import TaskForm from '../../../Components/TaskForm';
 
 interface PageProps {
   params: Promise<{ id: string }>;

@@ -29,7 +29,7 @@ export default function TaskForm({ defaultValues, isEditing }: TaskFormProps) {
         await createTask(data);
       }
       router.push('/');
-      router.refresh(); // Refresh the page to show updated data
+      router.refresh(); 
     } catch (error) {
       console.error('Error submitting form:', error);
       setError('Failed to save task. Please try again.');

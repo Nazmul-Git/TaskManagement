@@ -1,7 +1,7 @@
 
-import TaskForm from '@/app/Components/TaskForm';
-import { Loading } from '@/app/Components/UI/Loading';
 import { Suspense } from 'react';
+import { Loading } from '../../Components/UI/Loading';
+import TaskForm from '../../Components/TaskForm';
 
 export default function NewTaskPage() {
   return (
