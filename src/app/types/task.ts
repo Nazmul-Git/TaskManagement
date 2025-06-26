@@ -3,7 +3,7 @@ export interface Task {
   title: string;
   description: string;
   status: 'pending' | 'completed';
-  dueDate: string;
+  due_date: string;
 }
 
 export type TaskStatus = Task['status'];

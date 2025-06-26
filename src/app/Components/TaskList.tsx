@@ -10,7 +10,6 @@ interface TaskListProps {
   tasks: Task[];
   onDeleteTask: (taskId: string) => void;
   deletingId: string | null;
-  due_date: string;
 }
 
 export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListProps) {
@@ -103,7 +102,7 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
         <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
           {tasks?.map((task) => (
             <tr
-              key={task?.id}
+              key={task.id}
               className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150"
             >
               <td className="px-8 py-6">
@@ -147,7 +146,7 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
               </td>
               <td className="px-6 py-6 whitespace-nowrap">
                 <div className="text-sm text-gray-900 dark:text-gray-200 font-medium">
-                  {formatDate(task?.due_date)}
+                  {formatDate(task.due_date)}
                 </div>
                 <div
                   className={`text-xs mt-1 ${

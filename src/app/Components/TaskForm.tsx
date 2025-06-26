@@ -99,8 +99,8 @@ export default function TaskForm({ defaultValues, isEditing }: TaskFormProps) {
           {...register('dueDate', { required: 'Due date is required' })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border"
         />
-        {errors.dueDate && (
-          <p className="mt-2 text-sm text-red-600">{errors.dueDate.message}</p>
+        {errors.due_date && (
+          <p className="mt-2 text-sm text-red-600">{errors.due_date.message}</p>
         )}
       </div>
 
