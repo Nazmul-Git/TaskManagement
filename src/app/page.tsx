@@ -19,6 +19,9 @@ export default function Dashboard() {
   const [isMobile, setIsMobile] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // Calculate completed tasks count
+  const completedTasksCount = tasks.filter(task => task.status === 'completed').length;
+
   // Check if device is mobile
   useEffect(() => {
     const checkIfMobile = () => {
@@ -123,9 +126,15 @@ export default function Dashboard() {
           ))}
         </div>
 
-        <div className="flex items-center px-4 py-2">
-          <span className="text-sm font-medium mr-2">Total Tasks:</span>
-          <span className="text-xl font-bold text-blue-600">{tasks.length}</span>
+        <div className="flex flex-wrap gap-4">
+          <div className="flex items-center">
+            <span className="light:text-black dark:text-white text-sm font-medium mr-2">Total:</span>
+            <span className="text-xl font-bold text-blue-600">{tasks?.length}</span>
+          </div>
+          <div className="flex items-center">
+            <span className="light:text-black dark:text-white text-sm font-medium mr-2">Completed:</span>
+            <span className="text-xl font-bold text-green-600">{completedTasksCount}</span>
+          </div>
         </div>
       </div>
       <div className="bg-white rounded-lg shadow overflow-hidden">

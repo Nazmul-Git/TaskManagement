@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { deleteTask } from '../lib/api';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
 
 interface TaskListProps {
   tasks: Task[];
@@ -13,8 +14,11 @@ interface TaskListProps {
   deletingId: string | null;
 }
 
+type SortOrder = 'asc' | 'desc';
+
 export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListProps) {
   const router = useRouter();
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
   const formatDate = (dateString: string) => {
     try {
@@ -38,6 +42,17 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
     }
   };
 
+  // Sort tasks by due date
+  const sortedTasks = [...tasks].sort((a, b) => {
+    const dateA = new Date(a.due_date).getTime();
+    const dateB = new Date(b.due_date).getTime();
+    return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+  });
+
+  const toggleSortOrder = () => {
+    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
+  };
+
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -56,8 +71,8 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
 
   const emptyStateVariants = {
     hidden: { opacity: 0, scale: 0.9 },
-    show: { 
-      opacity: 1, 
+    show: {
+      opacity: 1,
       scale: 1,
       transition: { duration: 0.5 }
     }
@@ -65,14 +80,14 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
 
   if (tasks?.length === 0) {
     return (
-      <motion.div 
+      <motion.div
         initial="hidden"
         animate="show"
         variants={emptyStateVariants}
         className="flex flex-col items-center justify-center p-12 text-center dark:bg-gray-900 dark:text-white"
       >
-        <motion.div 
-          animate={{ 
+        <motion.div
+          animate={{
             rotate: [0, 5, -5, 0],
             transition: { repeat: Infinity, repeatType: "reverse", duration: 3 }
           }}
@@ -133,8 +148,28 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
             <th className="px-6 py-5 text-left text-sm font-semibold text-indigo-800 dark:text-indigo-200 uppercase tracking-wider">
               Status
             </th>
-            <th className="px-6 py-5 text-left text-sm font-semibold text-indigo-800 dark:text-indigo-200 uppercase tracking-wider">
-              Due Date
+            <th
+              className="px-6 py-5 text-left text-sm font-semibold text-indigo-800 dark:text-indigo-200 uppercase tracking-wider cursor-pointer"
+              onClick={toggleSortOrder}
+            >
+              <div className="flex items-center">
+                Due Date
+                <motion.span
+                  animate={{ rotate: sortOrder === 'asc' ? 0 : 180 }}
+                  transition={{ duration: 0.2 }}
+                  className="ml-1"
+                >
+                  {sortOrder === 'asc' ? (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  )}
+                </motion.span>
+              </div>
             </th>
             <th className="px-6 py-5 text-left text-sm font-semibold text-indigo-800 dark:text-indigo-200 uppercase tracking-wider">
               Actions
@@ -143,7 +178,7 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
         </thead>
         <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
           <AnimatePresence>
-            {tasks?.map((task) => (
+            {sortedTasks?.map((task) => (
               <motion.tr
                 key={task.id}
                 variants={itemVariants}
@@ -155,7 +190,7 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
               >
                 <td className="px-8 py-6">
                   <div className="flex items-center">
-                    <motion.div 
+                    <motion.div
                       whileHover={{ rotate: 10 }}
                       className="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-xl bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 mr-4"
                     >
@@ -177,7 +212,7 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
                     <div>
                       <div className="font-medium text-gray-900 dark:text-white text-lg">{task?.title}</div>
                       <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">
-                        {task?.description || 'No description provided'}
+                        {task?.description?.length > 50 ? task?.description.slice(0, 50) + '...' : task.description || 'No description provided'}
                       </div>
                     </div>
                   </div>
@@ -185,13 +220,12 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
                 <td className="px-6 py-6 whitespace-nowrap">
                   <motion.span
                     whileTap={{ scale: 0.95 }}
-                    className={`px-4 py-2 inline-flex text-sm leading-5 font-semibold rounded-full ${
-                      task?.status === 'completed'
+                    className={`px-4 py-2 inline-flex text-sm leading-5 font-semibold rounded-full ${task?.status === 'completed'
                         ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                         : task?.status === 'pending'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                        : 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
-                    }`}
+                          ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+                          : 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
+                      }`}
                   >
                     {task?.status.charAt(0).toUpperCase() + task?.status.slice(1)}
                   </motion.span>
@@ -201,11 +235,10 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
                     {formatDate(task.due_date)}
                   </div>
                   <div
-                    className={`text-xs mt-1 ${
-                      new Date(task?.due_date) < new Date() && task?.status !== 'completed'
+                    className={`text-xs mt-1 ${new Date(task?.due_date) < new Date() && task?.status !== 'completed'
                         ? 'text-red-500 dark:text-red-400 font-medium'
                         : 'text-gray-500 dark:text-gray-400'
-                    }`}
+                      }`}
                   >
                     {new Date(task?.due_date) < new Date() && task?.status !== 'completed'
                       ? 'Overdue'
@@ -270,9 +303,8 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
                       <button
                         onClick={() => handleDelete(task?.id)}
                         disabled={deletingId === task?.id}
-                        className={`text-black dark:text-gray-300 flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-sm bg-gray-300 dark:bg-gray-700 hover:bg-red-700 dark:hover:bg-red-600 hover:text-white transition-all duration-300 ${
-                          deletingId === task?.id ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
-                        }`}
+                        className={`text-black dark:text-gray-300 flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-sm bg-gray-300 dark:bg-gray-700 hover:bg-red-700 dark:hover:bg-red-600 hover:text-white transition-all duration-300 ${deletingId === task?.id ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
                       >
                         {deletingId === task?.id ? (
                           <>
