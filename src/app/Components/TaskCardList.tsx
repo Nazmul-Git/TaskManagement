@@ -6,6 +6,7 @@ interface TaskCardListProps {
   tasks: Task[];
   onDeleteTask: (taskId: string) => void;
   deletingId: string | null;
+  due_date: string;
 }
 
 export default function TaskCardList({ tasks, onDeleteTask, deletingId }: TaskCardListProps) {
