@@ -10,6 +10,7 @@ interface TaskListProps {
   tasks: Task[];
   onDeleteTask: (taskId: string) => void;
   deletingId: string | null;
+  dueDate: string;
 }
 
 export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListProps) {
@@ -146,7 +147,7 @@ export default function TaskList({ tasks, onDeleteTask, deletingId }: TaskListPr
               </td>
               <td className="px-6 py-6 whitespace-nowrap">
                 <div className="text-sm text-gray-900 dark:text-gray-200 font-medium">
-                  {formatDate(task?.due_date)}
+                  {formatDate(task.dueDate)}
                 </div>
                 <div
                   className={`text-xs mt-1 ${
