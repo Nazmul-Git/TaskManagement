@@ -18,7 +18,7 @@ export default function TaskCardList({ tasks, onDeleteTask, deletingId }: TaskCa
           <div key={task.id} className="border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start">
               <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-lg truncate">{task.title}</h3>
+                <h3 className="text-black font-medium text-lg truncate">{task.title}</h3>
               </div>
               <span className={`px-2 py-1 text-xs rounded-full ml-2 ${
                 task.status === 'completed'
@@ -44,7 +44,7 @@ export default function TaskCardList({ tasks, onDeleteTask, deletingId }: TaskCa
             <div className="mt-4 flex justify-end gap-2">
               <Link 
                 href={`/tasks/${task.id}`} 
-                className="cursor-pointer rounded-sm bg-gray-300 px-4 py-1 hover:bg-gray-400 transition-colors"
+                className="text-black cursor-pointer rounded-sm bg-gray-300 px-4 py-1 hover:bg-gray-400 transition-colors"
               >
                 View
               </Link>

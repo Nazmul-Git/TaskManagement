@@ -59,13 +59,13 @@ export default function TaskPage({ params }: { params: Promise<{ id: string }> }
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen dark:bg-gray-900 py-8">
       <div className="flex items-center justify-center px-4">
         <div className="w-full max-w-2xl">
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
             <div className="p-6">
               <div className="flex justify-between items-start mb-6">
-                <h1 className="text-2xl font-bold dark:text-white">{task.title}</h1>
+                <h1 className="text-black text-2xl font-bold dark:text-white">{task.title}</h1>
                 <div className="flex space-x-2">
                   <Link
                     href={`/tasks/${task.id}/edit`}
