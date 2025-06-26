@@ -1,11 +1,16 @@
 import axios from 'axios';
+import { Task, TaskStatus } from '../types/task';
 
 const API_BASE_URL = 'https://685bbc9189952852c2dac199.mockapi.io/api/v1';
 
-export const fetchTasks = async (status?: TaskStatus): Promise<Task[]> => {
-  const url = status ? `${API_BASE_URL}/tasks?status=${status}` : `${API_BASE_URL}/tasks`;
-  const response = await axios.get(url);
-  return response.data;
+export const fetchTasks = async (): Promise<Task[]> => {
+  try {
+    const response = await axios.get<Task[]>(`${API_BASE_URL}/tasks`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    throw new Error('Failed to fetch tasks');
+  }
 };
 
 export const fetchTask = async (id: string): Promise<Task> => {

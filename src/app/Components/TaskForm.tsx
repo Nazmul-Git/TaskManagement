@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { createTask, updateTask } from '../lib/api';
-import { Button } from './UI/Button';
 import { Task } from '../types/task';
 import { useForm } from 'react-hook-form';
 
@@ -12,15 +11,17 @@ interface TaskFormProps {
   isEditing?: boolean;
 }
 
-export default function TaskForm({ defaultValues, isEditing = false }: TaskFormProps) {
+export default function TaskForm({ defaultValues, isEditing }: TaskFormProps) {
   const { register, handleSubmit, formState: { errors } } = useForm<Task>({
     defaultValues,
   });
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const onSubmit = async (data: Task) => {
     setIsSubmitting(true);
+    setError(null);
     try {
       if (isEditing && defaultValues?.id) {
         await updateTask(defaultValues.id, data);
@@ -28,8 +29,10 @@ export default function TaskForm({ defaultValues, isEditing = false }: TaskFormP
         await createTask(data);
       }
       router.push('/');
+      router.refresh(); // Refresh the page to show updated data
     } catch (error) {
       console.error('Error submitting form:', error);
+      setError('Failed to save task. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -37,6 +40,12 @@ export default function TaskForm({ defaultValues, isEditing = false }: TaskFormP
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      {error && (
+        <div className="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg">
+          {error}
+        </div>
+      )}
+
       <div>
         <label htmlFor="title" className="block text-sm font-medium text-gray-700">
           Title
@@ -96,16 +105,27 @@ export default function TaskForm({ defaultValues, isEditing = false }: TaskFormP
       </div>
 
       <div className="flex justify-end space-x-3">
-        <Button
+        <button
           type="button"
-          variant="secondary"
           onClick={() => router.push('/')}
+          className="px-4 py-2 text-sm font-medium cursor-pointer text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          disabled={isSubmitting}
         >
           Cancel
-        </Button>
-        <Button type="submit" variant="primary" isLoading={isSubmitting}>
-          {isEditing ? 'Update Task' : 'Create Task'}
-        </Button>
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 text-sm font-medium cursor-pointer text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            'Saving...'
+          ) : isEditing ? (
+            'Update Task'
+          ) : (
+            'Create Task'
+          )}
+        </button>
       </div>
     </form>
   );

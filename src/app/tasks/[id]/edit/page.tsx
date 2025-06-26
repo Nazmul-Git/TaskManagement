@@ -5,9 +5,14 @@ import { fetchTask } from '@/app/lib/api';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
 
-export default async function EditTaskPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function EditTaskPage({ params }: PageProps) {
   try {
-    const task = await fetchTask(params.id);
+    const unwrappedParams = await params;
+    const task = await fetchTask(unwrappedParams.id);
 
     return (
       <div className="container mx-auto px-4 py-8">
@@ -15,7 +20,7 @@ export default async function EditTaskPage({ params }: { params: { id: string } 
           <h1 className="text-2xl font-bold mb-6">Edit Task</h1>
           <div className="bg-white rounded-lg shadow overflow-hidden p-6">
             <Suspense fallback={<Loading />}>
-              <TaskForm defaultValues={task} isEditing />
+              <TaskForm defaultValues={task} isEditing={true} />
             </Suspense>
           </div>
         </div>
